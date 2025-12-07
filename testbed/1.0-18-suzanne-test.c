@@ -138,7 +138,11 @@ int main(int argc, char *argv[])
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
     glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);
 
-    glShadeModel(GL_SMOOTH);
+#ifdef USE_MYTINYGL
+    glShadeModel(GL_PHONG);  /* Per-fragment lighting */
+#else
+    glShadeModel(GL_SMOOTH); /* System GL doesn't support GL_PHONG */
+#endif
 
     printf("Suzanne test running\n");
     printf("SPACE: toggle wireframe\n");
