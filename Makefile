@@ -1,6 +1,6 @@
 CC = gcc
 AR = ar
-CFLAGS = -Wall -g -std=c99 -I./include
+CFLAGS = -Wall -O3 -march=native -ffast-math -std=c99 -I./include
 
 SRC = src/gl_api.c src/raster.c src/textures.c src/vbo.c src/lists.c
 OBJ = $(SRC:.c=.o)

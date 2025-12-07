@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -g -std=c99
+CFLAGS = -Wall -O3 -march=native -ffast-math -std=c99
 CFLAGS_MYTINYGL = -I../include -DUSE_MYTINYGL
 LDFLAGS_SYSGL = -lSDL2 -lGL -lm
 LDFLAGS_MYTINYGL = -lSDL2 -L../lib -lMyTinyGL -lm
