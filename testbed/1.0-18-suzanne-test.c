@@ -186,7 +186,7 @@ int main(int argc, char *argv[])
         glLoadIdentity();
 
         /* Position camera */
-        glTranslatef(0.0f, 0.0f, -3.0f);
+        glTranslatef(0.0f, 0.0f, -2.2f);
         glRotatef(angle_x, 1.0f, 0.0f, 0.0f);
         glRotatef(angle_y, 0.0f, 1.0f, 0.0f);
 
