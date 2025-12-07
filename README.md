@@ -2,6 +2,8 @@
 
 A lightweight software OpenGL 1.x renderer. No GPU required.
 
+![Suzanne rendered with MyTinyGL](example.png)
+
 ## What is it?
 
 MyTinyGL is a complete software implementation of the OpenGL 1.x fixed-function pipeline. It renders 3D graphics entirely on the CPU, producing pixel-perfect output without any GPU or hardware acceleration.
