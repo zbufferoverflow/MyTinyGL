@@ -856,10 +856,21 @@ static void draw_triangle_wireframe(GLState *ctx, vertex_t *c0, vertex_t *c1, ve
     float z1 = c1->position.z;
     float z2 = c2->position.z;
 
+    /* Get vertex colors - compute lighting if using Phong shading */
+    color_t col0 = c0->color;
+    color_t col1 = c1->color;
+    color_t col2 = c2->color;
+
+    if ((ctx->flags & FLAG_LIGHTING) && ctx->shade_model == GL_PHONG) {
+        col0 = compute_lighting(ctx, c0->eye_pos, c0->eye_normal, &ctx->material_front);
+        col1 = compute_lighting(ctx, c1->eye_pos, c1->eye_normal, &ctx->material_front);
+        col2 = compute_lighting(ctx, c2->eye_pos, c2->eye_normal, &ctx->material_front);
+    }
+
     /* Draw the 3 edges */
-    draw_line_full(ctx, x0, y0, z0, x1, y1, z1, c0->color, c1->color, c0->eye_z, c1->eye_z, c0->texcoord, c1->texcoord);
-    draw_line_full(ctx, x1, y1, z1, x2, y2, z2, c1->color, c2->color, c1->eye_z, c2->eye_z, c1->texcoord, c2->texcoord);
-    draw_line_full(ctx, x2, y2, z2, x0, y0, z0, c2->color, c0->color, c2->eye_z, c0->eye_z, c2->texcoord, c0->texcoord);
+    draw_line_full(ctx, x0, y0, z0, x1, y1, z1, col0, col1, c0->eye_z, c1->eye_z, c0->texcoord, c1->texcoord);
+    draw_line_full(ctx, x1, y1, z1, x2, y2, z2, col1, col2, c1->eye_z, c2->eye_z, c1->texcoord, c2->texcoord);
+    draw_line_full(ctx, x2, y2, z2, x0, y0, z0, col2, col0, c2->eye_z, c0->eye_z, c2->texcoord, c0->texcoord);
 }
 
 /* Draw triangle vertices as points */
@@ -870,9 +881,20 @@ static void draw_triangle_points(GLState *ctx, vertex_t *c0, vertex_t *c1, verte
     ndc_to_screen(ctx, c1->position.x, c1->position.y, &x1, &y1);
     ndc_to_screen(ctx, c2->position.x, c2->position.y, &x2, &y2);
 
-    draw_point_at_screen(ctx, x0, y0, c0->position.z, c0->color, c0->eye_z);
-    draw_point_at_screen(ctx, x1, y1, c1->position.z, c1->color, c1->eye_z);
-    draw_point_at_screen(ctx, x2, y2, c2->position.z, c2->color, c2->eye_z);
+    /* Get vertex colors - compute lighting if using Phong shading */
+    color_t col0 = c0->color;
+    color_t col1 = c1->color;
+    color_t col2 = c2->color;
+
+    if ((ctx->flags & FLAG_LIGHTING) && ctx->shade_model == GL_PHONG) {
+        col0 = compute_lighting(ctx, c0->eye_pos, c0->eye_normal, &ctx->material_front);
+        col1 = compute_lighting(ctx, c1->eye_pos, c1->eye_normal, &ctx->material_front);
+        col2 = compute_lighting(ctx, c2->eye_pos, c2->eye_normal, &ctx->material_front);
+    }
+
+    draw_point_at_screen(ctx, x0, y0, c0->position.z, col0, c0->eye_z);
+    draw_point_at_screen(ctx, x1, y1, c1->position.z, col1, c1->eye_z);
+    draw_point_at_screen(ctx, x2, y2, c2->position.z, col2, c2->eye_z);
 }
 
 /* Render a single triangle with clipping and rasterization */
