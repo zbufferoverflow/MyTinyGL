@@ -172,7 +172,7 @@ static void draw_line_full(GLState *ctx, int32_t x0, int32_t y0, float z0, int32
 
             /* Alpha test - discard pixel if test fails */
             if (alpha_test_enabled && !alpha_test(ctx->alpha_func, tex_color.a, ctx->alpha_ref)) {
-                goto next_pixel;
+                continue;
             }
 
             /* Modulate vertex color with texture color */
@@ -180,7 +180,7 @@ static void draw_line_full(GLState *ctx, int32_t x0, int32_t y0, float z0, int32
         } else if (alpha_test_enabled) {
             /* Alpha test on vertex color when no texture */
             if (!alpha_test(ctx->alpha_func, c.a, ctx->alpha_ref)) {
-                goto next_pixel;
+                continue;
             }
         }
 
@@ -225,7 +225,6 @@ static void draw_line_full(GLState *ctx, int32_t x0, int32_t y0, float z0, int32
             }
         }
 
-next_pixel:
         if (cur_x == x1 && cur_y == y1) break;
 
         int32_t e2 = err * 2;

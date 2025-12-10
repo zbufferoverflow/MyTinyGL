@@ -372,28 +372,38 @@ void glEnable(GLenum cap)
 {
     CHECK_CTX();
     if (list_record_enable(cap)) return;
+
     uint32_t flag = cap_to_flag(cap);
     if (flag) {
         ctx->flags |= flag;
-    } else if (cap >= GL_LIGHT0 && cap <= GL_LIGHT7) {
-        ctx->lights[cap - GL_LIGHT0].enabled = GL_TRUE;
-    } else {
-        gl_set_error(ctx, GL_INVALID_ENUM);
+        return;
     }
+
+    if (cap >= GL_LIGHT0 && cap <= GL_LIGHT7) {
+        ctx->lights[cap - GL_LIGHT0].enabled = GL_TRUE;
+        return;
+    }
+
+    gl_set_error(ctx, GL_INVALID_ENUM);
 }
 
 void glDisable(GLenum cap)
 {
     CHECK_CTX();
     if (list_record_disable(cap)) return;
+
     uint32_t flag = cap_to_flag(cap);
     if (flag) {
         ctx->flags &= ~flag;
-    } else if (cap >= GL_LIGHT0 && cap <= GL_LIGHT7) {
-        ctx->lights[cap - GL_LIGHT0].enabled = GL_FALSE;
-    } else {
-        gl_set_error(ctx, GL_INVALID_ENUM);
+        return;
     }
+
+    if (cap >= GL_LIGHT0 && cap <= GL_LIGHT7) {
+        ctx->lights[cap - GL_LIGHT0].enabled = GL_FALSE;
+        return;
+    }
+
+    gl_set_error(ctx, GL_INVALID_ENUM);
 }
 
 void glClear(GLbitfield mask)
@@ -512,26 +522,30 @@ void glPushMatrix(void)
 {
     CHECK_CTX();
     if (list_record_push_matrix()) return;
+
     GLint *depth = current_stack_depth();
-    if (*depth < MAX_MATRIX_STACK_DEPTH - 1) {
-        mat4_t src = mat4_from_array(current_matrix());
-        (*depth)++;
-        mat4_to_array(src, current_matrix());
-    } else {
+    if (*depth >= MAX_MATRIX_STACK_DEPTH - 1) {
         gl_set_error(ctx, GL_STACK_OVERFLOW);
+        return;
     }
+
+    mat4_t src = mat4_from_array(current_matrix());
+    (*depth)++;
+    mat4_to_array(src, current_matrix());
 }
 
 void glPopMatrix(void)
 {
     CHECK_CTX();
     if (list_record_pop_matrix()) return;
+
     GLint *depth = current_stack_depth();
-    if (*depth > 0) {
-        (*depth)--;
-    } else {
+    if (*depth <= 0) {
         gl_set_error(ctx, GL_STACK_UNDERFLOW);
+        return;
     }
+
+    (*depth)--;
 }
 
 void glOrtho(GLdouble left, GLdouble right, GLdouble bottom, GLdouble top, GLdouble near, GLdouble far)
